@@ -1,0 +1,29 @@
+# dsh-bilibili-retrieval — one insert row over the profile tree.
+# Later patch layers win per row, so users override config in
+# ~/.dsh/profiles/desktop/cordis.patch.yml under the same id.
+- insert:
+    - id: bilibili-retrieval
+      name: 'dsh-bilibili-retrieval'
+      config:
+        # Anonymous request budget: one request per N ms, bucket depth.
+        anonMinIntervalMs: 2000
+        anonBurst: 5
+        # Logged-in request budget: deliberately tighter than anonymous.
+        # High-frequency work (search/comments/frames) never uses this channel.
+        authMinIntervalMs: 3000
+        authBurst: 2
+        # Hard ceiling on authenticated calls per session, as a second guard
+        # on top of the rate limiter.
+        authMaxPerSession: 20
+        # Per-endpoint cache TTLs (ms).
+        cacheTtlMetaMs: 86400000
+        cacheTtlCommentsMs: 3600000
+        cacheTtlSpriteMs: 604800000
+        # Request timeout for a single bilibili HTTP call.
+        requestTimeoutMs: 20000
+        # Where the scanned login credential is stored (absolute path).
+        credentialPath: ''
+        # Frame-sheet retention. Enforced on every write, so the directory can
+        # never grow without bound; the newest sheet is always kept.
+        framesMaxFiles: 12
+        framesMaxBytes: 25165824

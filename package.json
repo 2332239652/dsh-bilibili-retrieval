@@ -1,0 +1,54 @@
+{
+  "name": "dsh-bilibili-retrieval",
+  "version": "0.2.0",
+  "type": "module",
+  "description": "Bilibili retrieval for DeepSeek Harness: search videos, read creator pinned comments and full descriptions, pull subtitles in slices with time anchors, and sample real frames. Zero runtime dependencies.",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "check": "node --check index.js && node --check lib/protocol.js && node --check lib/tools.js && node --check lib/login.js && node --check lib/qr.js && node --check lib/subtitle.js && node --check lib/frames.js",
+    "test": "node --test test/protocol.test.js test/login.test.js test/frames.test.js test/contract.test.js test/search.test.js",
+    "verify": "npm run check && npm run test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2332239652/dsh-bilibili-retrieval.git"
+  },
+  "homepage": "https://github.com/2332239652/dsh-bilibili-retrieval#readme",
+  "bugs": {
+    "url": "https://github.com/2332239652/dsh-bilibili-retrieval/issues"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "bilibili",
+    "retrieval",
+    "search",
+    "subtitle",
+    "transcript"
+  ],
+  "license": "MIT"
+}

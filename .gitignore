@@ -1,0 +1,33 @@
+# Node
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+
+# Local analysis artifacts (project-compass writes ~2 MB of IR/cache here)
+.project-compass/
+docs/project-compass/
+
+# Frame sheets written by bili_frames at runtime
+bili-frames/
+*.jpg.tmp
+
+# Login credential — never belongs in a repo. The plugin stores it under
+# $DSH_HOME/bili/credential.json, which is outside the working tree, but keep
+# these patterns here so a copy in the tree can never be committed by accident.
+credential.json
+bili-credential.json
+*.credential
+local.env
+.env
+.env.*
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Scratch
+tmp/
+*.log
