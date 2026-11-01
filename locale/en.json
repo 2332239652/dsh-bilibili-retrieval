@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Bilibili Retrieval",
-    "description": "Search Bilibili, read pinned creator comments and full descriptions, pull subtitles, sample real frames, and follow the related-video graph — so Chinese video tutorials become first-class retrieval sources."
+    "description": "Search Bilibili, read pinned creator comments and full descriptions, pull subtitles, sample real frames, and follow the related-video graph — so Chinese video tutorials become first-class retrieval sources. The settings panel handles QR login, cache and rate limits."
   }
 }

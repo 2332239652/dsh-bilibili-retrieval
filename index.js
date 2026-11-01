@@ -34,7 +34,8 @@ import {
   verifyCredential,
 } from "./lib/login.js";
 import { aiSummary, transcript } from "./lib/subtitle.js";
-import { cacheSprite, clearFrames, downloadSprite, frameCacheReport, frameSprite, previewDirectory } from "./lib/frames.js";
+import { cacheSprite, clearFrames, downloadSprite, frameCacheReport, frameSprite, previewDirectory, pruneFrames } from "./lib/frames.js";
+import { mountControlPanel } from "./lib/panel.js";
 import {
   renderComments,
   renderSearch,
@@ -605,7 +606,7 @@ function renderLogin(_args, value) {
  * @param {object} config - row config from cordis.patch.yml.
  */
 export function apply(ctx, config) {
-  const resolved = resolveConfig(config);
+  let resolved = resolveConfig(config);
   void traceActivation();
 
   // One client per plugin instance, so the budget and cache are shared by every
@@ -616,6 +617,56 @@ export function apply(ctx, config) {
   // at call time, so a login that lands later takes effect without a restart.
   void loadCredential(resolved).then((credential) => {
     if (credential !== null) client.credential = credential;
+  });
+
+  /**
+   * Merge a config patch from the control panel.
+   *
+   * Only the in-memory view changes: writing back to the profile would make the
+   * host recompose every plugin on the machine just because someone nudged a
+   * rate limit. The patch is also pushed into the live client so the new budget
+   * takes effect without a restart.
+   *
+   * @param {object} patch - validated numeric overrides.
+   * @returns {object} the effective config after the merge.
+   */
+  const applyConfigPatch = (patch) => {
+    resolved = { ...resolved, ...patch };
+    if (client.config !== undefined) client.config = resolved;
+    if (client.anonBucket !== undefined && patch.anonMinIntervalMs !== undefined) {
+      client.anonBucket.minIntervalMs = patch.anonMinIntervalMs;
+    }
+    if (client.anonBucket !== undefined && patch.anonBurst !== undefined) {
+      client.anonBucket.capacity = patch.anonBurst;
+    }
+    if (client.authBucket !== undefined && patch.authMinIntervalMs !== undefined) {
+      client.authBucket.minIntervalMs = patch.authMinIntervalMs;
+    }
+    if (client.authBucket !== undefined && patch.authBurst !== undefined) {
+      client.authBucket.capacity = patch.authBurst;
+    }
+    return resolved;
+  };
+
+  // Control panel. Optional: without a webServer (headless CLI, tests) the tools
+  // still work, there is just no UI to drive them from.
+  ctx.inject(["webServer"], (webCtx) => {
+    webCtx.effect(() =>
+      mountControlPanel(webCtx, {
+        config: () => resolved,
+        client,
+        login: {
+          createLoginQr,
+          pollLogin,
+          readCredential,
+          clearCredential,
+          verifyCredential,
+          saveCredential,
+        },
+        frames: { frameCacheReport, clearFrames, pruneFrames },
+        applyConfig: applyConfigPatch,
+      })
+    );
   });
 
   ctx.effect(() => {
