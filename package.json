@@ -23,7 +23,8 @@
   "scripts": {
     "check": "node --check index.js && node --check lib/protocol.js && node --check lib/tools.js && node --check lib/login.js && node --check lib/qr.js && node --check lib/subtitle.js && node --check lib/frames.js && node --check lib/panel.js && node --check lib/client.js",
     "test": "node --test test/protocol.test.js test/login.test.js test/frames.test.js test/contract.test.js test/search.test.js test/panel.test.js test/client.test.js",
-    "verify": "npm run check && npm run test"
+    "manifest": "node test/manifest-check.mjs",
+    "verify": "npm run check && npm run manifest && npm run test"
   },
   "engines": {
     "node": ">=20"

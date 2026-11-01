@@ -31,3 +31,5 @@ desktop.ini
 # Scratch
 tmp/
 *.log
+# Scratch used when composing commit messages on Windows
+_msg.txt
